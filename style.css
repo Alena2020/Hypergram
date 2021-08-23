@@ -1,1 +1,48 @@
+body {
+  color:mintcream;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  
+}
 
+canvas {
+background-color:deepskyblue;
+height: 100vh;
+}
+
+nav {
+  align-items: center;
+  background-color:dodgerblue;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  
+  height: 100vh;
+  width: 20vw;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+input {
+  margin: 5px 0 40px 0;
+}
+
+#file-input {
+  background-color: orchid;
+  border-radius: 15%;
+  color:mintcream;
+  height: 5vh;
+  margin: 30px;
+  padding: 6px;
+  width: 12vw;
+}
+
+button {
+  background-color: midnightblue;
+  border-radius: 45%;
+  color:mintcream;
+  height: 9vh;
+  margin: 30px;
+  width: 10vw;
+}
