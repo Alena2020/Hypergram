@@ -1,22 +1,26 @@
 body {
-  color:mintcream;
+  background-color: cornflowerblue;
+  color: mintcream;
   display: flex;
   flex-direction: row;
   margin: 0;
-  
+  height: 100vh;
+  width: 100vw;
 }
 
 canvas {
-background-color:deepskyblue;
-height: 100vh;
+  border: 5px solid deepskyblue;
+  box-shadow: 5px 5px 10px midnightblue, 10px 30px 45px midnightblue inset;
+  align-self: center;
+  margin-left: 100px;
 }
 
 nav {
   align-items: center;
-  background-color:dodgerblue;
+  background-color: dodgerblue;
   display: flex;
   flex-direction: column;
-  justify-content: center;  
+  justify-content: center;
   height: 100vh;
   width: 20vw;
   position: absolute;
@@ -26,12 +30,13 @@ nav {
 
 input {
   margin: 5px 0 40px 0;
+  box-shadow: 5px 5px 10px midnightblue, 10px 30px 45px midnightblue inset;
 }
 
 #file-input {
   background-color: orchid;
   border-radius: 15%;
-  color:mintcream;
+  color: mintcream;
   height: 5vh;
   margin: 30px;
   padding: 6px;
@@ -41,7 +46,7 @@ input {
 button {
   background-color: midnightblue;
   border-radius: 45%;
-  color:mintcream;
+  color: mintcream;
   height: 9vh;
   margin: 30px;
   width: 10vw;

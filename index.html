@@ -8,9 +8,9 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <canvas></canvas>
+  <canvas id="canvas"></canvas>
   <nav>
-      <input type="file" id="file-input">
+      <input type="file" id="file-input" accept = "image/*">
       <label for="brightness">Brightness</label> 
       <input type="range" id="brightness" min="0" max="100" value="50">
       <label for="contrast">Contrast</label>
@@ -19,5 +19,6 @@
       <input type="range" id="transparent" min="0" max="100" value="50">            
       <button id="save-button">Save image</button>
   </nav>
+  <script src="script.js"></script>
 </body>
 </html>
