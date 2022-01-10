@@ -1,110 +1,117 @@
-let fileInput = document.getElementById('file-input');
-let brightness = document.getElementById('brightness');
-let contrast = document.getElementById('contrast');
-let transparent = document.getElementById('transparent');
-let saveButton = document.getElementById('save-button');
-let canvas;
-let ctx;
-let imageData;
-let pixels;
-let brightnessValue = parseInt(brightness.value, 10);
+const fileInput = document.getElementById('file-input');
+const canvas = document.getElementById('canvas'); 
+const brightnessSlider = document.getElementById('brightness');
+const contrastSlider = document.getElementById('contrast');
+const transparentSlider = document.getElementById('transparent');
+const saveButton = document.getElementById('save-button');
 
-fileInput.addEventListener('change', function(ev) {
-        console.log(ev.target.files);
+let image = new Image();
+// To get started with image pixels, you need to get the 2D context of the canvas with the getContext() method:
+let ctx = canvas.getContext('2d'); 
+
+fileInput.addEventListener('change', function(ev) {        
         if(ev.target.files) {
             let file = ev.target.files[0];
             let reader  = new FileReader();
 
-            reader.onloadend = function (e) {
-                let image = new Image();
+            reader.readAsDataURL(file);
+
+            reader.onloadend = function (e) {                
                 image.src = e.target.result;
-                image.onload = function(ev) {
-                    console.log("Loading the image.");    
+                image.onload = function() {
+                    console.log("Loading the image."); 
+                    // Set the canvas the same width and height of the image
+                    canvas.width = image.width;
+                    canvas.height = image.height;
                     
-                    drawImage(image);          
+                    ctx.drawImage(image,0,0);
                 }
             }
-
-            reader.readAsDataURL(file);
         }
 });
 
-function drawImage(image) {
-    canvas = document.getElementById('canvas');  
-
-     // Set the canvas the same width and height of the image
-    canvas.width = image.width;
-    canvas.height = image.height;
-
-    //To get started with image pixels, need to get the 2D context of the canvas with the getContext() method:
-    ctx = canvas.getContext('2d'); 
-
-    ctx.drawImage(image,0,0); 
-}
-
-function getImageData() {
-    //Get ImageData object that stores array of the pixels:
-    imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    //Get a pixel array. It is stored inside imageData.data object:
-    pixels = imageData.data; 
-    console.log(pixels);    
-}
-
 /*
-After that, can change the pixel values and apply them. The RBGA color model describes each pixel of the canvas. It means that each pixel is a set of 4 numbers, where the first number describes the red color intensity, the second number is the green color, the third number describes the blue color, and the fourth number is the alpha parameter that describes the pixel transparency. The alpha parameter is a number between 0 (completely transparent) and 255 (completely opaque).
+  The RGBA color model describes each pixel of the canvas. It means that each pixel is a set of 4 numbers, where the first number describes the red color intensity, the second number is the green color, the third number describes the blue color, and the fourth number is the alpha parameter that describes the pixel transparency. The alpha parameter is a number between 0 (completely transparent) and 255 (completely opaque).
+
+  The pixels are stored in a one-dimensional array; the first 4 numbers describe the first pixel, the second 4 numbers describe the second pixel, and so on:
+
+  pixels[0] // the RED value of the first pixel
+  pixels[1] // the GREEN value of the first pixel
+  pixels[2] // the BLUE value of the first pixel
+  pixels[3] // the ALPHA value of the first pixel
+
+  pixels[4] // the RED value of the second pixel
+  pixels[5] // the GREEN value of the second pixel
+  pixels[6] // the BLUE value of the second pixel
+  pixels[7] // the ALPHA value of the second pixel
+
+  If users change the brightness value, use the following formula to change the initial pixel values:
+
+  RED = Truncate(RED + Brightness)
+  GREEN = Truncate(GREEN + Brightness)
+  BLUE = Truncate(BLUE + Brightness)
+
+  If users change the contrast value, use the following formulas to change the pixel values:
+
+  Factor = 259*(255+Contrast)/(255*(259-Contrast))
+  RED= Truncate(Factor * (RED - 128) + 128)
+  GREEN = Truncate(Factor * (GREEN - 128) + 128)
+  BLUE = Truncate(Factor * (BLUE - 128) + 128)
 */
 
-// Update the canvas with the new data
-function updatedPixelsValues() {
-    //Once  altered the pixels of the imageData object,  need to put the updated pixels values on the canvas with the putImageData() method of the context object:
-    ctx.putImageData(imageData, 0, 0);
-}
+function changedPixelValues() {
+    let brightness = parseInt(brightnessSlider.value);
+    let contrast = parseInt(contrastSlider.value);
+    let transparent = parseFloat(transparentSlider.value);
 
+    ctx.drawImage(image, 0, 0);
+    // After that, you have to get ImageData object that stores array of the pixels:
+    let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    // Now, you can get a pixel array. It is stored inside imageData.data object:
+    let pixels = imageData.data;
+    let factor = 259 * (255 + contrast) / (255 * (259 - contrast));
 
-brightness.addEventListener('change', function (pixels, brightnessValue) {
-    
-    getImageData();
- console.log("pixels"); 
-    console.log(pixels); 
+    for (let i = 3; i < pixels.length; i += 4) {
+        for (let j = 1; j < 4; j++) {
+            pixels[i-j] = truncate(factor * (pixels[i-j] - 128) + 128 + brightness);
+        }
 
-
-    //If users change the brightness value - formula to change the initial pixel values:
-    // RED = Truncate(RED + Brightness);
-    // GREEN = Truncate(GREEN + Brightness);
-    // BLUE = Truncate(BLUE + Brightness);
-
-    for (let i = 0; i < pixels.length; i+= 4) {
-    pixels[i] += 255 * (brightnessValue / 100);
-    pixels[i+1] += 255 * (brightnessValue / 100);
-    pixels[i+2] += 255 * (brightnessValue / 100);
+        pixels[i] *= transparent;
     }
 
-    updatedPixelsValues();
-    console.log("pixels"); 
-    console.log(pixels); 
+    imageData.data = pixels;
+
+    /*
+      Once  altered the pixels of the imageData object,  
+      need to put the updated pixels values on the canvas with 
+      the putImageData() method of the context object:
+     */
+    ctx.putImageData(imageData, 0, 0);
+  
+}
+
+/*  
+  Truncate keeps the values in the valid range, from 0 to +255. 
+  If a value goes below 0, it will be truncated to zero; 
+  if a value goes beyond 255, it will be truncated to 255. 
+*/
+
+function truncate(value) {
+    if (value < 0) {
+        return 0;
+    } else if (value > 255) {
+        return 255;
+    } else {
+        return value;
+    }
+}
+
+brightnessSlider.addEventListener('change', function () {
+  changedPixelValues();
 });
-
-
-
-
-
-
-contrast.addEventListener('change', function (value) {
-   // updatedPixelsValues();
-    //If users change the contrast value - formulas to change the pixel values:
-    Factor = 259*(255 + Contrast)/(255*(259 - Contrast));
-    RED = Truncate(Factor * (RED - 128) + 128);
-    GREEN = Truncate(Factor * (GREEN - 128) + 128);
-    BLUE = Truncate(Factor * (BLUE - 128) + 128);
-    //Truncate keeps the values in the valid range, from 0 to +255. If a value goes below 0, it will be truncated to zero; if a value goes beyond 255, it will be truncated to 255.
-
-   // updatedPixelsValues();
+contrastSlider.addEventListener('change', function () {
+  changedPixelValues();
 });
-
-transparent.addEventListener('change', function (value) {
-   // updatedPixelsValues();
-    //If users change the transparency of the image - formula to change the initial pixel values:
-    ALPHA = ALPHA * Transparent; 
-    
-    //updatedPixelsValues();
+transparentSlider.addEventListener('change', function () {
+  changedPixelValues();
 });
