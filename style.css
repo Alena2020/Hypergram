@@ -1,29 +1,30 @@
 body {
-  background-color: cornflowerblue;
-  color: mintcream;
+  background-color: lightskyblue;
+  box-shadow: inset 5px 10px 15px aqua;
+  color: white;
   display: flex;
   flex-direction: row;
+  font-size: 15px;
   margin: 0;
   height: 100vh;
   width: 100vw;
 }
 
 canvas {
-  border: 5px solid deepskyblue;
-  box-shadow: 5px 5px 10px midnightblue, 10px 30px 45px midnightblue inset;
-  align-self: center;
-  margin-left: 100px;
+  align-self: stretch;
+  margin: 20px;
 }
 
 nav {
   align-items: center;
   background-color: dodgerblue;
+  box-shadow: 5px 5px 10px midnightblue, 10px 20px 35px midnightblue inset;
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: 100vh;
   width: 20vw;
-  position: absolute;
+  position: fixed;
   right: 0;
   top: 0;
 }
@@ -31,23 +32,29 @@ nav {
 input {
   margin: 5px 0 40px 0;
   box-shadow: 5px 5px 10px midnightblue, 10px 30px 45px midnightblue inset;
+  cursor: pointer;
+  width: 12vw;
 }
 
 #file-input {
-  background-color: orchid;
-  border-radius: 15%;
-  color: mintcream;
-  height: 5vh;
+  background-color: lightskyblue;
+  border-radius: 45%;
+  color: white;
+  cursor: pointer;
+  height: 7vh;
   margin: 30px;
-  padding: 6px;
+  padding-top: 30px;
+  padding-left: 20px;
   width: 12vw;
 }
 
 button {
-  background-color: midnightblue;
+  background-color: lightskyblue;
   border-radius: 45%;
-  color: mintcream;
-  height: 9vh;
+  box-shadow: 5px 5px 10px midnightblue, 10px 30px 45px midnightblue inset;
+  color: white;
+  cursor: pointer;
+  height: 12vh;
   margin: 30px;
-  width: 10vw;
+  width: 12vw;
 }
