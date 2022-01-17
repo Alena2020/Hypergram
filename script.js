@@ -25,13 +25,43 @@ fileInput.addEventListener('change', function(ev) {
                     canvas.height = image.height;
                     
                     ctx.drawImage(image,0,0);
+                    resetSliders();
                 }
             }
         }
 });
 
+brightnessSlider.addEventListener('change', function () {
+  changedPixelValues();
+});
+contrastSlider.addEventListener('change', function () {
+  changedPixelValues();
+});
+transparentSlider.addEventListener('change', function () {
+  changedPixelValues();
+});
+
+saveButton.addEventListener('click', function () {
+  // get canvas data  
+    let image = canvas.toDataURL();  
+  
+    // create temporary link  
+    let tmpLink = document.createElement( 'a' );  
+    tmpLink.download = 'result.png'; // set the name of the download file 
+    tmpLink.href = image;  
+  
+    // temporarily add link to body and initiate the download  
+    document.body.appendChild( tmpLink );  
+    tmpLink.click();  
+    document.body.removeChild( tmpLink );   
+});
+
 /*
-  The RGBA color model describes each pixel of the canvas. It means that each pixel is a set of 4 numbers, where the first number describes the red color intensity, the second number is the green color, the third number describes the blue color, and the fourth number is the alpha parameter that describes the pixel transparency. The alpha parameter is a number between 0 (completely transparent) and 255 (completely opaque).
+  The RGBA color model describes each pixel of the canvas. 
+  It means that each pixel is a set of 4 numbers, where the first number describes the red color intensity, 
+  the second number is the green color, the third number describes the blue color, 
+  and the fourth number is the alpha parameter that describes the pixel transparency. 
+  The alpha parameter is a number between 0 (completely transparent) and 255 (completely opaque).
 
   The pixels are stored in a one-dimensional array; the first 4 numbers describe the first pixel, the second 4 numbers describe the second pixel, and so on:
 
@@ -87,7 +117,10 @@ function changedPixelValues() {
       the putImageData() method of the context object:
      */
     ctx.putImageData(imageData, 0, 0);
-  
+
+    console.log("brightnessSlider.value =" + brightnessSlider.value);
+    console.log("contrastSlider.value =" + contrastSlider.value); 
+    console.log("transparentSlider.value =" + transparentSlider.value);   
 }
 
 /*  
@@ -106,12 +139,12 @@ function truncate(value) {
     }
 }
 
-brightnessSlider.addEventListener('change', function () {
-  changedPixelValues();
-});
-contrastSlider.addEventListener('change', function () {
-  changedPixelValues();
-});
-transparentSlider.addEventListener('change', function () {
-  changedPixelValues();
-});
+function resetSliders() {
+    contrastSlider.value = 0;
+    brightnessSlider.value = 0;
+    transparentSlider.value = 1;
+
+    contrastSlider.dispatchEvent(new Event("change"));
+    brightnessSlider.dispatchEvent(new Event("change"));
+    transparentSlider.dispatchEvent(new Event("change"));
+}
